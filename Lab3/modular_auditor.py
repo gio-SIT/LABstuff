@@ -8,6 +8,12 @@ def generate_report(current_total, failed_attempts):
     print("Total Units Processed: ", current_total)
     print("Number of Failed/Rejected Entries: ", failed_attempts)
 
+def process_delivery(current_total, new_value):
+    current_total += new_value
+    inventory = current_total # Update total inventory units
+    print("Current units: ", inventory)
+    return current_total
+    
 
 
 while inventory >= 0 and inventory <= 500 :
@@ -31,8 +37,9 @@ while inventory >= 0 and inventory <= 500 :
         print("Stock input will exceed 500, you can only input maximum of" , str(difference) + " units.")
         continue
 
-    inventory += int(inventoryy)
-    print("Current units: ", inventory)
+
+    inventory = process_delivery(inventory, int(inventoryy))
+
 
     if inventory > 500:
         print("Warning, inventory exceed 500 units. ")
