@@ -3,10 +3,18 @@ inventoryy = ""
 total = 0
 rejected = 0
 
+def calculate_tax(amount):
+    tax = 0.1*amount
+    print("Total Tax Required to Pay: $",tax)
+    return tax
+
 def generate_report(current_total, failed_attempts):
+    print("")
     print("=== Audit Report ===")
     print("Total Units Processed: ", current_total)
     print("Number of Failed/Rejected Entries: ", failed_attempts)
+    calculate_tax(current_total)
+    print("")
 
 def process_delivery(current_total, new_value):
     current_total += new_value
@@ -24,7 +32,6 @@ def get_valid_inputs():
         print("Error, please input a number")
     
     return inventoryy
-
 
 while inventory >= 0 and inventory <= 500 :
     
