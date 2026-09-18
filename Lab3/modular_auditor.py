@@ -50,8 +50,9 @@ while inventory >= 0 and inventory <= 500 :
     inventory = process_delivery(inventory, int(The_input))
 
 
+else:
     if inventory > 500:
-        print("Warning, inventory exceed 500 units. ")
+        print("Warning, inventory exceed 500 units. No further inputs allowed.")
         rejected += 1
         generate_report(inventory, rejected)
-        break
+        
