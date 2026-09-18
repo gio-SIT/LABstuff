@@ -13,23 +13,32 @@ def process_delivery(current_total, new_value):
     inventory = current_total # Update total inventory units
     print("Current units: ", inventory)
     return current_total
-    
 
-
-while inventory >= 0 and inventory <= 500 :
+def get_valid_inputs():
     inventoryy = input("Enter stock quantity (or 'quit' to exit.): ").strip()
 
     if inventoryy.lower() == "quit":
         generate_report(inventory,rejected)
-        break
-
+        return "quit"
     if inventoryy.isdigit() == False:
         print("Error, please input a number")
+    
+    return inventoryy
+
+
+while inventory >= 0 and inventory <= 500 :
+    
+    The_input = get_valid_inputs()
+
+    if The_input == "quit":
+        break
+
+    if The_input.isdigit() == False:
         rejected += 1
         continue
 
-    if 500-int(inventoryy)-inventory < 0:
-        difference = -(500-int(inventoryy)-inventory)
+    if 500-int(The_input)-inventory < 0:
+        difference = -(500-int(The_input))-inventory
         if inventory == 500:
             print("You are at maximum value of 500 units.")
             continue
@@ -38,7 +47,7 @@ while inventory >= 0 and inventory <= 500 :
         continue
 
 
-    inventory = process_delivery(inventory, int(inventoryy))
+    inventory = process_delivery(inventory, int(The_input))
 
 
     if inventory > 500:
