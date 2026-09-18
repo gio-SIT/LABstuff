@@ -37,18 +37,15 @@ while inventory >= 0 and inventory <= 500 :
         rejected += 1
         continue
 
-    if 500-int(The_input)-inventory < 0:
-        difference = -(500-int(The_input))-inventory
+    if inventory+int(The_input) > 500:
+        difference = int(The_input)+inventory-500
         if inventory == 500:
             print("You are at maximum value of 500 units.")
             continue
-
         print("Stock input will exceed 500, you can only input maximum of" , str(difference) + " units.")
         continue
 
-
     inventory = process_delivery(inventory, int(The_input))
-
 
 else:
     if inventory > 500:
