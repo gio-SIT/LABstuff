@@ -1,6 +1,4 @@
 inventory = 0
-inventoryy = ""
-total = 0
 rejected = 0
 
 def calculate_tax(amount):
@@ -45,7 +43,7 @@ while inventory >= 0 and inventory <= 500 :
         continue
 
     if inventory+int(The_input) > 500:
-        difference = int(The_input)+inventory-500
+        difference = 500-inventory
         if inventory == 500:
             print("You are at maximum value of 500 units.")
             continue
