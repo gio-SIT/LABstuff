@@ -7,8 +7,10 @@ def load_inventory():
     print("Load inventory.")
     print(data)
 
-def save_inventory():
-    print("Save inventory.")
+# def save_inventory():
+#     print("Save inventory.")
+#     with open('inventory.json', 'w') as file:
+#         file.writelines(orders)
 
 def calculate_tax(amount):
     tax = 0.1*amount
@@ -41,6 +43,7 @@ def get_valid_inputs():
     return inventoryy
 
 while inventory >= 0 and inventory <= 500 :
+
     load_inventory()
     
     The_input = get_valid_inputs()
