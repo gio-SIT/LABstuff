@@ -2,14 +2,18 @@ inventory = 0
 rejected = 0
 
 def load_inventory():
-    with open('inventory.json','r') as file:
+
+    with open('inventory.txt','r') as file:
+        file.seek(0)
         data = file.read()
-    print("Load inventory.")
+    print("-- Current inventory --")
+    print("")
     print(data)
+    print("")
 
 # def save_inventory():
 #     print("Save inventory.")
-#     with open('inventory.json', 'w') as file:
+#     with open('inventory.txt', 'w') as file:
 #         file.writelines(orders)
 
 def calculate_tax(amount):
@@ -32,9 +36,9 @@ def process_delivery(current_total, new_value):
     return current_total
 
 def get_valid_inputs():
-    inventoryy = input("Enter stock quantity (or 'quit' to exit.): ").strip()
+    inventoryy = input("Enter Product Name to Order(q or quit to quit): ")
 
-    if inventoryy.lower() == "quit":
+    if inventoryy.lower() == "quit" or inventoryy.lower() == "q":
         generate_report(inventory,rejected)
         return "quit"
     if inventoryy.isdigit() == False:
