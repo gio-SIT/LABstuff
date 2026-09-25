@@ -1,20 +1,31 @@
 inventory = 0
 rejected = 0
+DATA_product = []
 
 def load_inventory():
 
-    with open('inventory.txt','r') as file:
-        file.seek(0)
-        data = file.read()
-    print("-- Current inventory --")
-    print("")
-    print(data)
-    print("")
+    try:
+        with open('Lab4/inventory.txt','r') as file:
+            print("-- Current inventory --")
+            print("")
+            DATA_product = [line.strip().split(',') for line in file]
+            print(DATA_product)
+            print("")
+            return DATA_product
 
-# def save_inventory():
-#     print("Save inventory.")
-#     with open('inventory.txt', 'w') as file:
-#         file.writelines(orders)
+    except FileNotFoundError:
+        with open('Lab4/inventory.txt','w') as file:
+            print("New inventory Created. ")
+            return []
+
+    
+
+def save_inventory(LISTofITEMS):
+    print("Saved inventory.")
+    with open('Lab4/inventory.txt', 'w') as file:
+        for item in LISTofITEMS:
+            file.write(",".join(item))
+            file.write("\n")
 
 def calculate_tax(amount):
     tax = 0.1*amount
@@ -24,7 +35,6 @@ def calculate_tax(amount):
 def generate_report(current_total, failed_attempts):
     print("")
     print("=== Audit Report ===")
-    print("Total Units Processed: ", current_total)
     print("Number of Failed/Rejected Entries: ", failed_attempts)
     calculate_tax(current_total)
     print("")
@@ -36,41 +46,45 @@ def process_delivery(current_total, new_value):
     return current_total
 
 def get_valid_inputs():
-    inventoryy = input("Enter Product Name to Order(q or quit to quit): ")
+    Product_Name = input("Enter Product Name to Order(q or quit to quit): ")
+    if Product_Name.lower() == "quit" or Product_Name.lower() == "q":
+        
+        return "quit","quit"
 
-    if inventoryy.lower() == "quit" or inventoryy.lower() == "q":
+    inv_quantity = input("Enter Quantity (q or quit to quit): ").strip()
+
+    if inv_quantity.lower() == "quit" or inv_quantity.lower() == "q":
         generate_report(inventory,rejected)
-        return "quit"
-    if inventoryy.isdigit() == False:
+        return "quit","quit"
+    if inv_quantity.isdigit() == False:
         print("Error, please input a number")
     
-    return inventoryy
+    return Product_Name,inv_quantity
 
-while inventory >= 0 and inventory <= 500 :
 
-    load_inventory()
+while True:
+
+    DATA_product = load_inventory()
     
-    The_input = get_valid_inputs()
+    Product_Name,inv_quantity = get_valid_inputs()
 
-    if The_input == "quit":
+    if Product_Name == "quit" or inv_quantity == "quit":
+        generate_report(1,rejected)
         break
 
-    if The_input.isdigit() == False:
+    if inv_quantity.isdigit() == False:
         rejected += 1
         continue
 
-    if inventory+int(The_input) > 500:
-        difference = 500-inventory
-        if inventory == 500:
-            print("You are at maximum value of 500 units.")
-            continue
-        print("Stock input will exceed 500, you can only input maximum of" , str(difference) + " units.")
-        continue
-
-    inventory = process_delivery(inventory, int(The_input))
-
-else:
-    if inventory > 500:
-        print("Warning, inventory exceed 500 units. No further inputs allowed.")
-        rejected += 1
-        generate_report(inventory, rejected)
+    iteration = 0
+    for items in DATA_product:
+        print(items)
+        if items[1].lower().replace(" ","") == Product_Name.lower().replace(" ",""):
+            DATA_product[iteration][2] = str(int(inv_quantity)+int(items[2]))
+            save_inventory(DATA_product)
+        iteration += 1
+        print(DATA_product, "66666666666666666666666666666666666666")
+        #note make all variation of product names all work.
+    print("")
+    
+    
