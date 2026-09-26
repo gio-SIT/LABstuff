@@ -1,16 +1,17 @@
-inventory = 0
-rejected = 0
 DATA_product = []
 
 def load_inventory():
-
+    print("-- Current Orders: --")
+    print('')
     try:
         with open('Lab4/inventory.txt','r') as file:
-            print("-- Current inventory --")
-            print("")
+            
             DATA_product = [line.strip().split(',') for line in file]
-            print(DATA_product)
-            print("")
+
+            for item in DATA_product:
+                print(",".join(item))
+            print('')
+
             return DATA_product
 
     except FileNotFoundError:
@@ -18,32 +19,44 @@ def load_inventory():
             print("New inventory Created. ")
             return []
 
-    
-
 def save_inventory(LISTofITEMS):
-    print("Saved inventory.")
     with open('Lab4/inventory.txt', 'w') as file:
         for item in LISTofITEMS:
             file.write(",".join(item))
             file.write("\n")
+    print("Order successfully save to inventory.txt.")
 
-def calculate_tax(amount):
-    tax = 0.1*amount
-    print("Total Tax Required to Pay: $",tax)
-    return tax
+def process_delivery(DATA_product, Product_Name, inv_quantity):
+    iteration = 0
+    for items in DATA_product:
+        if items[1].lower().replace(" ","") == Product_Name.lower().replace(" ",""):
+            DATA_product[iteration][2] = str(int(inv_quantity)+int(items[2]))
+            print("New Order Added:")
+            print(DATA_product[iteration])
+            print("")
+            save_inventory(DATA_product)
 
-def generate_report(current_total, failed_attempts):
-    print("")
-    print("=== Audit Report ===")
-    print("Number of Failed/Rejected Entries: ", failed_attempts)
-    calculate_tax(current_total)
-    print("")
+            return
+        iteration += 1
 
-def process_delivery(current_total, new_value):
-    current_total += new_value
-    inventory = current_total # Update total inventory units
-    print("Current units: ", inventory)
-    return current_total
+    #if product does not exist in current list
+    if DATA_product:
+        highest_id = max(int(item[0]) for item in DATA_product)
+        new_id = highest_id + 1
+    else:
+        new_id = 1003
+
+    new_item = [str(new_id),Product_Name,str(inv_quantity)]
+
+    DATA_product.append(new_item)
+
+    print("New Product Added: ")
+    print(new_item)
+    print('')
+
+    save_inventory(DATA_product)
+    
+    
 
 def get_valid_inputs():
     Product_Name = input("Enter Product Name to Order(q or quit to quit): ")
@@ -51,12 +64,15 @@ def get_valid_inputs():
         
         return "quit","quit"
 
+    if Product_Name.replace(' ','') == '' or Product_Name == '':
+        print("Invalid Product name. Type again. ")
+        return "quit","quit"
+
     inv_quantity = input("Enter Quantity (q or quit to quit): ").strip()
 
     if inv_quantity.lower() == "quit" or inv_quantity.lower() == "q":
-        generate_report(inventory,rejected)
         return "quit","quit"
-    if inv_quantity.isdigit() == False:
+    if inv_quantity.isdigit() == False or inv_quantity == None:
         print("Error, please input a number")
     
     return Product_Name,inv_quantity
@@ -69,22 +85,13 @@ while True:
     Product_Name,inv_quantity = get_valid_inputs()
 
     if Product_Name == "quit" or inv_quantity == "quit":
-        generate_report(1,rejected)
         break
 
     if inv_quantity.isdigit() == False:
-        rejected += 1
         continue
 
-    iteration = 0
-    for items in DATA_product:
-        print(items)
-        if items[1].lower().replace(" ","") == Product_Name.lower().replace(" ",""):
-            DATA_product[iteration][2] = str(int(inv_quantity)+int(items[2]))
-            save_inventory(DATA_product)
-        iteration += 1
-        print(DATA_product, "66666666666666666666666666666666666666")
-        #note make all variation of product names all work.
+    process_delivery(DATA_product, Product_Name, inv_quantity)
+
     print("")
     
     
