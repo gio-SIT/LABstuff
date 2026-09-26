@@ -1,18 +1,34 @@
 DATA_product = []
+total_inventory = 0
+rejected_entry = 0
+
+def show_tax_inventory(total_inventory):
+    tax = 0.1*total_inventory
+    print("Tax: $",tax," | Total Inventory: ",total_inventory)
+    return tax
+
+def generate_report(current_total, failed_entry):
+    print("")
+    print("=== Audit Report ===")
+    print("Total Transactions Recorded: ", current_total)
+    print("Total Units Processed: ", current_total)
+    print("Number of Failed/Rejected Entries: ", failed_entry)
+    print("")
 
 def load_inventory():
     print("-- Current Orders: --")
     print('')
     try:
         with open('inventory.txt','r') as file:
-            
+            total_inventory = 0
             DATA_product = [line.strip().split(',') for line in file]
 
             for item in DATA_product:
                 print(",".join(item))
+                total_inventory += int(item[2])
             print('')
 
-            return DATA_product
+            return DATA_product,total_inventory
 
     except FileNotFoundError:
         with open('inventory.txt','w') as file:
@@ -28,15 +44,18 @@ def save_inventory(LISTofITEMS):
 
 def process_delivery(DATA_product, Product_Name, inv_quantity):
     iteration = 0
+    update_inventory = total_inventory
     for items in DATA_product:
         if items[1].lower().replace(" ","") == Product_Name.lower().replace(" ",""):
             DATA_product[iteration][2] = str(int(inv_quantity)+int(items[2]))
             print("New Order Added:")
             print(DATA_product[iteration])
             print("")
+            update_inventory += int(inv_quantity)
+            show_tax_inventory(int(inv_quantity),update_inventory)
             save_inventory(DATA_product)
 
-            return
+            return update_inventory
         iteration += 1
 
     #if product does not exist in current list
@@ -80,17 +99,18 @@ def get_valid_inputs():
 
 while True:
 
-    DATA_product = load_inventory()
-    
+    DATA_product,total_inventory = load_inventory()
+
     Product_Name,inv_quantity = get_valid_inputs()
 
     if Product_Name == "quit" or inv_quantity == "quit":
+        generate_report(total_inventory,rejected_entry)
         break
 
     if inv_quantity.isdigit() == False:
         continue
 
-    process_delivery(DATA_product, Product_Name, inv_quantity)
+    total_inventory = process_delivery(DATA_product, Product_Name, inv_quantity)
 
     print("")
     
