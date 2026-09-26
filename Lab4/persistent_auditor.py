@@ -4,7 +4,7 @@ def load_inventory():
     print("-- Current Orders: --")
     print('')
     try:
-        with open('Lab4/inventory.txt','r') as file:
+        with open('inventory.txt','r') as file:
             
             DATA_product = [line.strip().split(',') for line in file]
 
@@ -15,12 +15,12 @@ def load_inventory():
             return DATA_product
 
     except FileNotFoundError:
-        with open('Lab4/inventory.txt','w') as file:
+        with open('inventory.txt','w') as file:
             print("New inventory Created. ")
             return []
 
 def save_inventory(LISTofITEMS):
-    with open('Lab4/inventory.txt', 'w') as file:
+    with open('inventory.txt', 'w') as file:
         for item in LISTofITEMS:
             file.write(",".join(item))
             file.write("\n")

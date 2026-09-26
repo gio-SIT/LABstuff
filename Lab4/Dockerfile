@@ -1,4 +1,8 @@
-FROM python:3.11-slim
+FROM python:3.11
+
 WORKDIR /app
+
 COPY persistent_auditor.py .
+COPY inventory.txt .
+
 CMD ["python", "persistent_auditor.py"]
