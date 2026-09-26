@@ -52,7 +52,7 @@ def process_delivery(DATA_product, Product_Name, inv_quantity):
             print(DATA_product[iteration])
             print("")
             update_inventory += int(inv_quantity)
-            show_tax_inventory(int(inv_quantity),update_inventory)
+            show_tax_inventory(update_inventory)
             save_inventory(DATA_product)
 
             return update_inventory
