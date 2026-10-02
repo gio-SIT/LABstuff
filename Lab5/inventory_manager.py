@@ -5,6 +5,7 @@ rejected_entry = 0
 #add_product(),update_stock(),search_product(),display_all()
 
 
+
 def show_tax_inventory(total_inventory):
     tax = 0.1*total_inventory
     print("Tax: $",tax," | Total Inventory: ",total_inventory)
@@ -19,27 +20,34 @@ def generate_report(current_total, failed_entry):
     print("")
 
 def load_inventory():
-    print("-- Current Orders: --")
+    print("-------------------------------")
+    print("-------------------------------")
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("-------------------------------")
+    print("-------------------------------")
     print('')
     try:
-        with open('inventory.txt','r') as file:
+        with open('inventory.json','r') as file:
             total_inventory = 0
             DATA_product = [line.strip().split(',') for line in file]
 
             for item in DATA_product:
                 print(",".join(item))
                 total_inventory += int(item[2])
-            print('')
+            
+            print("inventory.json found.")
+            print("Inventory loaded successfully.")
+            print("")
 
             return DATA_product,total_inventory
 
     except FileNotFoundError:
-        with open('inventory.txt','w') as file:
+        with open('inventory.json','w') as file:
             print("New inventory Created. ")
-            return []
+            return [],[]
 
 def save_inventory(LISTofITEMS):
-    with open('inventory.txt', 'w') as file:
+    with open('inventory.json', 'w') as file:
         for item in LISTofITEMS:
             file.write(",".join(item))
             file.write("\n")
@@ -81,6 +89,7 @@ def process_delivery(DATA_product, Product_Name, inv_quantity):
     
 
 def get_valid_inputs():
+
     Product_Name = input("Enter Product Name to Order(q or quit to quit): ")
     if Product_Name.lower() == "quit" or Product_Name.lower() == "q":
         
@@ -99,10 +108,30 @@ def get_valid_inputs():
     
     return Product_Name,inv_quantity
 
+def menu_screen():
+    print("---------MENU----------")
+    txt_menu_options = ["1. Display All Products",
+                    "2. Add Product",
+                    "3. Update Stock",
+                    "4. Search Product",
+                    "5. Save Inventory",
+                    "6. Exit"
+                    ]
+    [print(i) for i in txt_menu_options]
+
+    get_valid_inputs()
+
+    option_num = input("Choose Option:  ")
+    if option_num.isdigit() == False:
+        print("Please select a number. ")
+        return 
+
+    return int(option_num)
 
 while True:
 
     DATA_product,total_inventory = load_inventory()
+    menu_screen()
 
     Product_Name,inv_quantity = get_valid_inputs()
 
