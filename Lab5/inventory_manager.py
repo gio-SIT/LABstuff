@@ -77,14 +77,12 @@ def search_product():
             return 1
     return 0
     
-    
 
 def save_inventory(LISTofITEMS):
     with open('inventory.json', 'w') as file:
-        for item in LISTofITEMS:
-            file.write(",".join(item))
-            file.write("\n")
-    print("Order successfully save to inventory.txt.")
+        json.dump(LISTofITEMS, file, indent=4)   
+    print("Inventory saved successfully. ")
+
 
 def process_delivery(DATA_product, Product_Name, inv_quantity):
     iteration = 0
@@ -144,12 +142,20 @@ def Menu_OPERATIONS(option):
     if option == 1:
         display_all(DATA_product)
 
+    6
+
     if option == 4:
         exist = search_product()
         if exist == 0:
             print("Product not found. ")
 
+    if option == 5:
+        print("Saving inventory... ")
+        save_inventory(DATA_product)
+
     if option == 6:
+        print("Saving inventory before exit...")
+        save_inventory(DATA_product)
         return "quit"
 
 
