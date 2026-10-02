@@ -65,6 +65,20 @@ def display_all(product_items):
         print(f"ID: {ID} | Name: {Name} | Price: {Price} | Stock: {Stock}")
     print("")
 
+def search_product():
+
+    print("")
+    print("Search Product")
+    ID = input("Enter Product ID: ")
+
+    for item in DATA_product:
+        if item["ID"] == ID:
+            print(f"ID: {ID} | Name: {item["Name"]} | Price: {item["Price"]} | Stock: {item["Stock"]}")
+            return 1
+    return 0
+    
+    
+
 def save_inventory(LISTofITEMS):
     with open('inventory.json', 'w') as file:
         for item in LISTofITEMS:
@@ -129,6 +143,12 @@ def add_product():
 def Menu_OPERATIONS(option):
     if option == 1:
         display_all(DATA_product)
+
+    if option == 4:
+        exist = search_product()
+        if exist == 0:
+            print("Product not found. ")
+
     if option == 6:
         return "quit"
 
