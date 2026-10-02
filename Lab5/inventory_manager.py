@@ -1,3 +1,5 @@
+import json
+
 DATA_product = []
 total_inventory = 0
 rejected_entry = 0
@@ -29,11 +31,15 @@ def load_inventory():
     try:
         with open('inventory.json','r') as file:
             total_inventory = 0
-            DATA_product = [line.strip().split(',') for line in file]
 
+            # May have to clean data from JSON
+            product_ids = json.load(file)
+            DATA_product = product_ids
+
+            #Update total inventory
             for item in DATA_product:
-                print(",".join(item))
-                total_inventory += int(item[2])
+                Stock = item["Stock"]
+                total_inventory += Stock
             
             print("inventory.json found.")
             print("Inventory loaded successfully.")
@@ -45,6 +51,15 @@ def load_inventory():
         with open('inventory.json','w') as file:
             print("New inventory Created. ")
             return [],[]
+
+def display_all(product_items):
+    for item in product_items:
+        ID = item["ID"]
+        Name = item["Name"]
+        Price = item["Price"]
+        Stock = item["Stock"]
+
+        print(f"ID: {ID} | Name: {Name} | Price: {Price} | Stock: {Stock}")
 
 def save_inventory(LISTofITEMS):
     with open('inventory.json', 'w') as file:
@@ -132,6 +147,7 @@ while True:
 
     DATA_product,total_inventory = load_inventory()
     menu_screen()
+
 
     Product_Name,inv_quantity = get_valid_inputs()
 
