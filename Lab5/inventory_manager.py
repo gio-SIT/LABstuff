@@ -24,19 +24,6 @@ def display_menu():
 
     return int(option_num)
 
-def show_tax_inventory(total_inventory):
-    tax = 0.1*total_inventory
-    print("Tax: $",tax," | Total Inventory: ",total_inventory)
-    return tax
-
-def generate_report(current_total, failed_entry):
-    print("")
-    print("=== Audit Report ===")
-    print("Total Transactions Recorded: ", current_total)
-    print("Total Units Processed: ", current_total)
-    print("Number of Failed/Rejected Entries: ", failed_entry)
-    print("")
-
 def load_inventory():
     print("-------------------------------")
     print("-------------------------------")
@@ -95,7 +82,6 @@ def process_delivery(DATA_product, Product_Name, inv_quantity):
             print(DATA_product[iteration])
             print("")
             update_inventory += int(inv_quantity)
-            show_tax_inventory(update_inventory)
             save_inventory(DATA_product)
 
             return update_inventory
@@ -143,18 +129,27 @@ def add_product():
 def Menu_OPERATIONS(option):
     if option == 1:
         display_all(DATA_product)
+    if option == 6:
+        return "quit"
 
 
 while True:
 
     DATA_product,total_inventory = load_inventory()
-    Menu_OPERATIONS(display_menu())
+    task = Menu_OPERATIONS(display_menu())
+
+    if task == "quit":
+        break
+
+
+
+
+
 
 
     Product_Name,inv_quantity = add_product()
 
     if Product_Name == "quit" or inv_quantity == "quit":
-        generate_report(total_inventory,rejected_entry)
         break
 
     if inv_quantity.isdigit() == False:
