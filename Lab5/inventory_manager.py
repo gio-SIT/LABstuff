@@ -6,7 +6,23 @@ rejected_entry = 0
 
 #add_product(),update_stock(),search_product(),display_all()
 
+def display_menu():
+    print("---------MENU----------")
+    txt_menu_options = ["1. Display All Products",
+                    "2. Add Product",
+                    "3. Update Stock",
+                    "4. Search Product",
+                    "5. Save Inventory",
+                    "6. Exit"
+                    ]
+    [print(i) for i in txt_menu_options]
 
+    option_num = input("Choose Option:  ")
+    if option_num.isdigit() == False:
+        print("Please select a number. ")
+        return 
+
+    return int(option_num)
 
 def show_tax_inventory(total_inventory):
     tax = 0.1*total_inventory
@@ -60,6 +76,7 @@ def display_all(product_items):
         Stock = item["Stock"]
 
         print(f"ID: {ID} | Name: {Name} | Price: {Price} | Stock: {Stock}")
+    print("")
 
 def save_inventory(LISTofITEMS):
     with open('inventory.json', 'w') as file:
@@ -103,7 +120,7 @@ def process_delivery(DATA_product, Product_Name, inv_quantity):
     
     
 
-def get_valid_inputs():
+def add_product():
 
     Product_Name = input("Enter Product Name to Order(q or quit to quit): ")
     if Product_Name.lower() == "quit" or Product_Name.lower() == "q":
@@ -123,33 +140,18 @@ def get_valid_inputs():
     
     return Product_Name,inv_quantity
 
-def menu_screen():
-    print("---------MENU----------")
-    txt_menu_options = ["1. Display All Products",
-                    "2. Add Product",
-                    "3. Update Stock",
-                    "4. Search Product",
-                    "5. Save Inventory",
-                    "6. Exit"
-                    ]
-    [print(i) for i in txt_menu_options]
+def Menu_OPERATIONS(option):
+    if option == 1:
+        display_all(DATA_product)
 
-    get_valid_inputs()
-
-    option_num = input("Choose Option:  ")
-    if option_num.isdigit() == False:
-        print("Please select a number. ")
-        return 
-
-    return int(option_num)
 
 while True:
 
     DATA_product,total_inventory = load_inventory()
-    menu_screen()
+    Menu_OPERATIONS(display_menu())
 
 
-    Product_Name,inv_quantity = get_valid_inputs()
+    Product_Name,inv_quantity = add_product()
 
     if Product_Name == "quit" or inv_quantity == "quit":
         generate_report(total_inventory,rejected_entry)
