@@ -1,8 +1,6 @@
 import json
 
-DATA_product = []
-total_inventory = 0
-rejected_entry = 0
+products = []
 
 class Product:
 
@@ -27,6 +25,9 @@ class Product:
         print(f'Stock : {self.__quantity}')
 
     def update_stock(self,quantity):
+        if quantity < 0:
+            print("Stock cannot be negative")
+            return
         self.__stock = quantity
 
     @classmethod
@@ -38,6 +39,70 @@ class Product:
             data["Price"],
             data["Stock"]
         )
+
+
+class File_Handling:
+
+    def __init__(self, filename = "inventory.json", ):
+        self.__filename = filename
+        
+
+    def load_inventory(self):
+        print("-------------------------------")
+        print("-------------------------------")
+        print("INVENTORY MANAGEMENT SYSTEM")
+        print("-------------------------------")
+        print("-------------------------------")
+        print('')
+        try:
+            with open(self.__filename,'r') as file:
+                total_inventory = 0
+
+                # File exists but contains nothing
+                if file.read().strip() == "":
+                    print("inventory.json is empty.")
+                    print("Starting with empty inventory.")
+                    return [],0
+
+                # Go back to beginning of file
+                file.seek(0)
+
+                product_ids = json.load(file)
+                DATA_product = product_ids
+
+                #Update total inventory
+                products = [
+                    Product.from_dict(item) for item in DATA_product
+                ]
+
+                for item in DATA_product:
+                    Stock = item["Stock"]
+                    total_inventory += Stock
+                
+                print("inventory.json found.")
+                print("Inventory loaded successfully.")
+                print("")
+
+                return products,total_inventory
+
+        except FileNotFoundError:
+            with open('inventory.json','w') as file:
+                print("No existing inventory, new inventory Created. ")
+
+                self.save_inventory([])
+                return [],0
+
+
+    def save_inventory(self,LISTofITEMS):
+
+        data = [
+            Product.to_dict() for Product in LISTofITEMS
+        ]
+
+        with open(self.__filename, 'w') as file:
+            json.dump(data, file, indent=4)   
+            print("Inventory saved successfully. ")
+
 
 
 
@@ -53,52 +118,15 @@ def display_menu():
                     ]
     [print(i) for i in txt_menu_options]
 
-    option_num = input("Choose Option:  ")
+    option_num = input("Choose Option(1-6):  ")
     if option_num.isdigit() == False:
         print("Please select a number. ")
-        return 
+        return None
+    if option_num not in range(1,6):
+        print("Please choose a number in range")
+        return None
 
     return int(option_num)
-
-
-def load_inventory():
-    print("-------------------------------")
-    print("-------------------------------")
-    print("INVENTORY MANAGEMENT SYSTEM")
-    print("-------------------------------")
-    print("-------------------------------")
-    print('')
-    try:
-        with open('inventory.json','r') as file:
-            total_inventory = 0
-
-            # File exists but contains nothing
-            if file.read().strip() == "":
-                print("inventory.json is empty.")
-                print("Starting with empty inventory.")
-                return [], 0
-
-            # Go back to beginning of file
-            file.seek(0)
-
-            product_ids = json.load(file)
-            DATA_product = product_ids
-
-            #Update total inventory
-            for item in DATA_product:
-                Stock = item["Stock"]
-                total_inventory += Stock
-            
-            print("inventory.json found.")
-            print("Inventory loaded successfully.")
-            print("")
-
-            return DATA_product,total_inventory
-
-    except FileNotFoundError:
-        with open('inventory.json','w') as file:
-            print("New inventory Created. ")
-            return [],[]
 
 
 def display_all(product_items):
@@ -129,19 +157,6 @@ def search_product():
     return None
 
 
-def update_stock(ID):
-    new_val = int(input("New Stock Quantity: "))
-    for item in DATA_product:
-        if item["ID"] == ID:
-            item["Stock"] = new_val
-            return ID,new_val
-    return None
-
-
-def save_inventory(LISTofITEMS):
-    with open('inventory.json', 'w') as file:
-        json.dump(LISTofITEMS, file, indent=4)   
-    print("Inventory saved successfully. ")
 
 
 def add_product(product_items):
@@ -229,17 +244,22 @@ def Menu_OPERATIONS(option):
         return "quit"
 
 
-while True:
+# while True:
 
-    if DATA_product == []:
-        DATA_product,total_inventory = load_inventory()
-    task = Menu_OPERATIONS(display_menu())
+#     if DATA_product == []:
+#         DATA_product,total_inventory = load_inventory()
+#     task = Menu_OPERATIONS(display_menu())
 
-    if task == "quit":
-        break
-    if task == "continue":
-        continue
+#     if task == "quit":
+#         break
+#     if task == "continue":
+#         continue
 
-    print("")
+#     print("")
     
-    
+file_handler = File_Handling()
+
+products, total_inventory = file_handler.load_inventory()
+
+# Save the list of Product objects
+file_handler.save_inventory(products)
