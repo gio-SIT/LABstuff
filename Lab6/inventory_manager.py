@@ -1,7 +1,5 @@
 import json
 
-products = []
-
 class Product:
 
     def __init__(self,ID:str,product_Name:str,cost:float,stock:int):
@@ -20,15 +18,24 @@ class Product:
 
     def display_information(self) -> None:
         print(f'ID : {self.__ID}')
-        print(f'Name : {self.__Name}')
+        print(f'Name : {self.__product}')
         print(f'Price : ${self.__cost:.2f}') 
-        print(f'Stock : {self.__quantity}')
+        print(f'Stock : {self.__stock}')
 
     def update_stock(self,quantity):
         if quantity < 0:
             print("Stock cannot be negative")
             return
         self.__stock = quantity
+
+    def get_ID(self):
+        return self.__ID
+
+    def get_stock(self):
+        return self.__stock
+
+    def get_ALL_product(self):
+        return self.__ID , self.__product, self.__cost, self.__stock
 
     @classmethod
     def from_dict(cls, data):
@@ -105,143 +112,127 @@ class File_Handling:
 
 
 
+class Main_Program:
+
+    def __init__(self):
+        pass
+
+    def main_menu(self):
+        print("---------MENU----------")
+        txt_menu_options = ["1. Display All Products",
+                        "2. Add Product",
+                        "3. Update Stock",
+                        "4. Search Product",
+                        "5. Save Inventory",
+                        "6. Exit"
+                        ]
+        [print(i) for i in txt_menu_options]
+
+        option_num = input("Choose Option(1-6):  ")
+        if option_num.isdigit() == False:
+            print("Please select a number. ")
+            return None
+        option_num = int(option_num)
+        if option_num not in range(1,7):
+            print("Please choose a number in range")
+            return None
+ 
+        if option_num == 1:
+            if not products:
+                print("No products in inventory.")
+            else:
+                for product in products:
+                    print("")
+                    product.display_information()
+
+        if option_num == 2:
+            self.add_product(products)
+
+        if option_num == 3:
+            self.update_Stock(products)
+
+        if option_num == 4:
+            self.search_product(products)
+
+        if option_num == 5:
+            # Save the list of Product objects
+            file_handler.save_inventory(products)
+
+        if option_num == 6:
+            print("Exitting now \n")
+            file_handler.save_inventory(products)
 
 
-def display_menu():
-    print("---------MENU----------")
-    txt_menu_options = ["1. Display All Products",
-                    "2. Add Product",
-                    "3. Update Stock",
-                    "4. Search Product",
-                    "5. Save Inventory",
-                    "6. Exit"
-                    ]
-    [print(i) for i in txt_menu_options]
-
-    option_num = input("Choose Option(1-6):  ")
-    if option_num.isdigit() == False:
-        print("Please select a number. ")
-        return None
-    if option_num not in range(1,6):
-        print("Please choose a number in range")
-        return None
-
-    return int(option_num)
+    def update_Stock(self,products):
+        item, ID = self.search_product(products)
+        if item != None:
+            item.update_stock(int(input("New stock number here:")))
 
 
-def display_all(product_items):
-    for item in product_items:
-        ID = item["ID"]
-        Name = item["Name"]
-        Price = item["Price"]
-        Stock = item["Stock"]
+    def search_product(self,products):
+        print("")
+        print("Search Product")
+        ID = str(input("Enter Product ID: "))
+        print("")
 
-        print(f"ID: {ID} | Name: {Name} | Price: {Price} | Stock: {Stock}")
-    print("")
-
-
-def search_product():
-    print("")
-    print("Search Product")
-    ID = str(input("Enter Product ID: "))
-    print("")
-
-    for item in DATA_product:
-        if item["ID"] == ID:
-            print("Product Found: ")
-            print("------------------------------------------")
-            print(f"ID: {ID} | Name: {item['Name']} | Price: {item['Price']} | Stock: {item['Stock']}")
-            print("------------------------------------------")
-            return ID
-    print("Product not found.")
-    return None
+        for item in products:
+            if item.get_ID() == ID:
+                print("Product Found: ")
+                print("------------------------------------------")
+                item.display_information()
+                print("------------------------------------------")
+                return item
+        print("Product not found.")
+        return None, ID
 
 
+    def add_product(self, products):
+        print("\nAdd New Product")
 
+        product_items, search_ID = self.search_product(products)
 
-def add_product(product_items):
-    print("Add New Product")
-
-    product_id = input("Product ID: ").strip()
-
-    # Check if ID already exists
-    for item in product_items:
-        if item["ID"] == product_id:
-            print("Error: Product ID already exists.")
+        # Check if ID already exists
+        if product_items != None:
+            print("\nUnable to add. Item ID already exists. Returning to Menu. \n")
             return
 
-    product_name = input("Product Name: ").strip()
+        NEW_product_name = input("Add New Product Name: ").strip()
+        if not NEW_product_name:
+            print("Product name cannot be empty.")
+            return
 
-    while True:
-        try:
-            price = float(input("Price: "))
-            if price < 0:
-                print("Price cannot be negative.")
-                continue
-            break
-        except ValueError:
-            print("Please enter a valid price.")
+        while True:
+            try:
+                New_price = float(input("Price: "))
+                if New_price < 0:
+                    print("Price cannot be negative.")
+                    continue
+                break
+            except ValueError:
+                print("Please enter a valid price.")
 
-    while True:
-        try:
-            stock = int(input("Stock Quantity: "))
-            if stock < 0:
-                print("Stock cannot be negative.")
-                continue
-            break
-        except ValueError:
-            print("Please enter a whole number.")
+        while True:
+            try:
+                New_stock = int(input("Stock Quantity: "))
+                if New_stock < 0:
+                    print("Stock cannot be negative.")
+                    continue
+                break
+            except ValueError:
+                print("Please enter a whole number.")
 
-    new_product = {
-        "ID": product_id,
-        "Name": product_name,
-        "Price": price,
-        "Stock": stock
-    }
+        new_product = Product(
+            search_ID,
+            NEW_product_name,
+            New_price,
+            New_stock
+        )
 
-    product_items.append(new_product)
+        products.append(new_product)
+        print("\nProduct added successfully!")
+        new_product.display_information()
 
-    print("Product added successfully!")
 
-
-def Menu_OPERATIONS(option):
-    if option == 1:
-        display_all(DATA_product)
-
-    if option == 2:
-        add_product(DATA_product)
-
-    if option == 3:
-        print("Update Stock ")
-
-        ID = search_product()
-
-        if ID is None:
-            return "continue"
-
-        result = update_stock(ID)
-
-        if result is not None:
-            ID, new_val = result
-            print(f"Stock updated: {ID} -> {new_val}")
-
-        return "continue"
-            
-
-    if option == 4:
-        exist = search_product()
-        if exist == 0:
-            print("Product not found. ")
-            return "continue"
-
-    if option == 5:
-        print("Saving inventory... ")
-        save_inventory(DATA_product)
-
-    if option == 6:
-        print("Saving inventory before exit...")
-        save_inventory(DATA_product)
-        return "quit"
 
 
 # while True:
@@ -256,10 +247,12 @@ def Menu_OPERATIONS(option):
 #         continue
 
 #     print("")
-    
 file_handler = File_Handling()
-
 products, total_inventory = file_handler.load_inventory()
 
-# Save the list of Product objects
-file_handler.save_inventory(products)
+main_menu = Main_Program()
+main_menu.main_menu()
+
+
+main_menu.main_menu()
+
