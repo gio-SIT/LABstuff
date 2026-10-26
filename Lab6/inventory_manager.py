@@ -152,7 +152,7 @@ class Main_Program:
             if option_num == 6:
                 print("Exitting now \n")
                 file_handler.save_inventory(products)
-
+                break
 
 
 class Inventory:
@@ -252,7 +252,7 @@ class Inventory:
                 New_stock
             )
     
-            products.append(new_product)
+            self.__products.append(new_product)
             print("\nProduct added successfully!")
             self.display_products()
 
