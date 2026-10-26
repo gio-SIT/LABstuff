@@ -6,23 +6,32 @@ rejected_entry = 0
 
 class Product:
 
-    def __init__(self,ID,product_Name,cost,quantity):
-        self.ID = ID
-        self.product = product_Name
-        self.cost = cost
-        self.quantity = quantity
+    def __init__(self,ID:str,product_Name:str,cost:float,stock:int):
+        self.__ID = ID
+        self.__product = product_Name
+        self.__cost = cost
+        self.__stock = stock
 
     def to_dict(self):
         return {
-            "ID" : self.ID,
-            "Name" : self.product,
-            "Price" : self.cost,
-            "Stock" : self.quantity
+            "ID" : self.__ID,
+            "Name" : self.__product,
+            "Price" : self.__cost,
+            "Stock" : self.__stock
         }
+
+    def display_information(self) -> None:
+        print(f'ID : {self.__ID}')
+        print(f'Name : {self.__Name}')
+        print(f'Price : ${self.__cost:.2f}') 
+        print(f'Stock : {self.__quantity}')
+
+    def update_stock(self,quantity):
+        self.__stock = quantity
 
     @classmethod
     def from_dict(cls, data):
-        # Convert a dictionary from JSON into a Product
+        # Convert a dictionary from JSON into a list
         return cls(
             data["ID"],
             data["Name"],
